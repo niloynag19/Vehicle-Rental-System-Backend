@@ -1,4 +1,3 @@
-import express, { Request, Response } from "express"
 import app from "./app"
 import config from "./config"
 

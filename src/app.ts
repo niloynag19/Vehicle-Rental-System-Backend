@@ -11,6 +11,10 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 initDB()
+app.get("/", (req: Request, res: Response) => {
+    res.send("vehicle rental server")
+})
+
 
 app.use("/api/v1",usersRoutes)
 

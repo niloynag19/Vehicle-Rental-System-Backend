@@ -38,6 +38,7 @@ const putUsers = async (name: string, email: string, phone: string, role: string
         `UPDATE users SET name = $1, email = $2, phone = $3, role = $4 WHERE id = $5 RETURNING *`,
         [name, email, phone, role, id]
     );
+    result.rows.length>0?delete result.rows[0].password:result
     return result;
 };
 
