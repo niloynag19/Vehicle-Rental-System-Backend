@@ -9,8 +9,8 @@ router.get("/users",auth('admin'),usersController.getAllUsers)
 
 router.get("/users/:id",auth("admin","customer"),usersController.getSingleUsers)
 
-router.put("/users/:id",usersController.putUsers)
+router.put("/users/:id",auth('admin','customer'),usersController.putUsers)
 
-router.delete("/users/:id",usersController.deleteUsers)
+router.delete("/users/:id",auth('admin','customer'),usersController.deleteUsers)
 
 export const usersRoutes=router

@@ -1,17 +1,15 @@
 import { Request, Response } from "express";
 import { userServices } from "./users.services";
 
-
 const createUsers = async (req: Request, res: Response) => {
     try {
         const result = await userServices.createUsers(req.body);
         if (typeof result === 'string') {
             res.status(500).json({
                 success: false,
-                message: "User not found ",
+                message: "User not found",
             })
-        }
-        else {
+        } else {
             res.status(201).json({
                 success: true,
                 message: "User registered successfully",
@@ -26,25 +24,26 @@ const createUsers = async (req: Request, res: Response) => {
     }
 }
 
-const getAllUsers=async(req: Request, res: Response)=>{
+const getAllUsers = async (req: Request, res: Response) => {
     try {
        const result = await userServices.getAllUsers();
-       res.status(201).json({
-            success:true,
-            message:"User receive all successfully",
-            data:result.rows,
+       res.status(200).json({  
+            success: true,
+            message: "Users retrieved successfully",
+            data: result.rows,
        }) 
-    } catch (error:any) {
+    } catch (error: any) {
        res.status(500).json({
-        success:false,
-        massage:error.message
+        success: false,
+        message: error.message
        }) 
     }
 }
 
 const getSingleUsers = async (req: Request, res: Response) => {
     try {
-        const result = await userServices.getSingleUsers(req.params.id as string)
+        const id = Number(req.params.id);  
+        const result = await userServices.getSingleUsers(id)
         if (result.rows.length === 0) {
             res.status(404).json({
                 success: false,
@@ -68,10 +67,10 @@ const getSingleUsers = async (req: Request, res: Response) => {
 }
 
 const putUsers = async (req: Request, res: Response) => {
-    const {name,email,phone,role}=req.body;
+    const { name, email, phone, role } = req.body;
     try {
-        const{id}=req.params;
-        const result = await userServices.putUsers(name,email,phone,role,id!)
+        const id = Number(req.params.id); 
+        const result = await userServices.putUsers(name, email, phone, role, id)
         if (result.rows.length === 0) {
             res.status(404).json({
                 success: false,
@@ -94,30 +93,34 @@ const putUsers = async (req: Request, res: Response) => {
     }
 }
 
-const deleteUsers =  async (req: Request, res: Response) => {
-  try {
-    const result = await userServices.deleteUsers(req.params.id as string)
-    if (result.rows.length === 0) {
-      res.status(404).json({
-        success: false,
-        message: "User not found"
-      })
-    }
-    else {
-      res.status(200).json({
-        success: true,
-        message: "User id delete successfully",
-        data: null
-      })
-    }
+const deleteUsers = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
 
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message
-    })
-  }
-}
+        const result = await userServices.deleteUsers(id);
+
+        if (!result.success) {
+            return res.status(400).json({
+                success: false,
+                message: result.message
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User deleted successfully",
+            data: null
+        });
+
+    } catch (error: any) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
 
 
 export const usersController = {
@@ -127,4 +130,3 @@ export const usersController = {
     putUsers,
     deleteUsers
 }
- 
